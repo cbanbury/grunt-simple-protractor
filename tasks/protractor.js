@@ -24,17 +24,22 @@ module.exports = function(grunt) {
       seleniumAddress: 'http://localhost:4444/wd/hub'
     })
 
+    var simpleProtractorOpts = ['runAsync', 'autoLocalServer', 'localServerPort', 
+                                'autoWebdriver', 'debugWebdriver', 'nodeBinary', 'configFile']
 
 
     function runWebdriver(protractorLibPath) {
       var webdriverBinPath = path.resolve(protractorLibPath, '../../bin/webdriver-manager')
+      grunt.log.debug('Webdriver process started: ' + 
+                      options.nodeBinary + ' ' + webdriverBinPath + ' start')
+
       webdriverProcess = grunt.util.spawn({
-        cmd: 'node',
+        cmd: options.nodeBinary,
         args: [webdriverBinPath, 'start'],
         opts: { stdio: 'pipe' }
       }) 
 
-      if (options.debugWebdriver)
+      if (options.debugWebdriver && webdriverProcess.stderr)
         webdriverProcess.stderr.pipe(process.stderr)
 
 
@@ -45,7 +50,8 @@ module.exports = function(grunt) {
           seleniumProcessId = matchObj[0].split(' ')[1]
       }
 
-      webdriverProcess.stdout.on('data', findSeleniumPid)
+      if (webdriverProcess.stdout)
+        webdriverProcess.stdout.on('data', findSeleniumPid)
     }
 
 
@@ -67,7 +73,7 @@ module.exports = function(grunt) {
     function runProtractor(protractorLibPath) {
       var protractorArgs = []
       Object.keys(options).forEach(function(key) {
-        if (key !== 'nodeBinary' && key !== 'localServerPort' && key !== 'configFile') {
+        if (!simpleProtractorOpts.some(function(opt) { return opt === key })) {
           if (typeof options[key] === 'boolean' && options[key] === true) {
             protractorArgs.push('--' + key)
           }
@@ -85,12 +91,19 @@ module.exports = function(grunt) {
         protractorArgs.push(options.configFile)
 
 
+      grunt.log.debug('Starting protractor: ' + 
+                      options.nodeBinary + ' ' + protractorArgs.join(' '))
+
       var protractorProcess = grunt.util.spawn({
         cmd: options.nodeBinary,
         args: protractorArgs,
         opts: { stdio: 'pipe' }
       }, 
       function(error, result, code) {
+        grunt.log.debug('Protractor finished. (Code ' + code + ')')
+        grunt.log.debug('Error:', error)
+        grunt.log.debug('Result:', result)
+
         function finish() {
           if (server) {
             server.close()
@@ -115,12 +128,16 @@ module.exports = function(grunt) {
         }
         else {
           if (error) {
-            grunt.log.error(result.stdout)
+            if (result.stderr)
+              grunt.log.error(result.stderr)
+            else if (result.stdout)
+              grunt.log.error(result.stdout)
+
             finish()
-            grunt.fail.fatal('Protractor task failed')
+            grunt.fail.fatal('Protractor task failed.')
           }
           else {
-            grunt.log.write(result)
+            grunt.log.write(result.stdout)
             finish()
           }
         }
@@ -139,12 +156,13 @@ module.exports = function(grunt) {
       if (options.autoWebdriver) {
         runWebdriver(protractorLibPath)
 
-        webdriverProcess.stderr.on('data', function(chunk) {
-          chunk = chunk.toString('ascii')
-          var matchObj = chunk.match(/Started SocketListener/)
-          if (matchObj)
-            runProtractor(protractorLibPath)
-        })
+        if (webdriverProcess && webdriverProcess.stderr)
+          webdriverProcess.stderr.on('data', function(chunk) {
+            chunk = chunk.toString('ascii')
+            var matchObj = chunk.match(/Started .*Server/)
+            if (matchObj)
+              runProtractor(protractorLibPath)
+          })
       }
       else {
         runProtractor(protractorLibPath)

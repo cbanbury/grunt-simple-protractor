@@ -172,6 +172,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* **v1.0.2**   02.25.2015   Added more verbose error output
 * **v1.0.0**   02.24.2015   Initial release
 
 

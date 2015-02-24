@@ -1,9 +1,17 @@
 module.exports = function(grunt) {
+  var nodeBinary = 'node'
+  try {
+    require('fs').realpathSync('/usr/bin/node')
+  }
+  catch (e) {
+    nodeBinary = 'nodejs'
+  }
+
   grunt.initConfig({
     protractor: {
       basic: {
         options: {
-          verbose: true,
+          nodeBinary: nodeBinary,
           specs: ['test/*.e2e.js'],
           resultJsonOutputFile: 'test/output/actual.json'
         }
