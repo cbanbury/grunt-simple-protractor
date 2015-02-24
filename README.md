@@ -1,5 +1,11 @@
 # grunt-simple-protractor
 
+[![Build Info][wercker-image]][wercker-url]
+[![Dev Dependencies][devDependency-image]][devDependency-url]
+[![Coverage Info][coverage-image]][coverage-url]
+[![Npm Version][npm-image]][npm-url]
+[![Npm Downloads][downloads-image]][npm-url]
+
 A simple protractor task for grunt. It automates much of the process of running E2E protractor 
 tests. 
 
@@ -16,7 +22,7 @@ First install the task:
 
 And then include your tests in your `Gruntfile.js`:
 
-    module.exports = function (grunt) {
+    module.exports = function(grunt) {
       grunt.initConfig({
         protractor: {
           your_target: {
@@ -159,7 +165,33 @@ Turn on troubleshooting output.
 
 
 
+## Contributing
+
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 
-[grunt-protractor-runner]: https://www.npmjs.com/package/grunt-protractor-runner
+## Release History
+
+* **v1.0.0**   02.24.2015   Initial release
+
+
+## License
+
+Copyright (c) 2015 Risto Stevcev. Licensed under the MIT license.
+
+
+
+[wercker-image]: https://img.shields.io/wercker/ci/54ec5ff0d9b146366325ad81.svg?style=flat
+[wercker-url]: https://app.wercker.com/#applications/54ec5ff0d9b146366325ad81
+
+[coverage-image]: https://img.shields.io/codeclimate/github/Risto-Stevcev/grunt-simple-protractor.svg?style=flat
+[coverage-url]: https://codeclimate.com/github/Risto-Stevcev/grunt-simple-protractor
+
+[devDependency-image]: https://david-dm.org/Risto-Stevcev/grunt-simple-protractor/dev-status.svg
+[devDependency-url]: https://david-dm.org/Risto-Stevcev/grunt-simple-protractor#info=devDependencies
+
+[npm-image]: https://img.shields.io/npm/v/grunt-simple-protractor.svg?style=flat
+[downloads-image]: https://img.shields.io/npm/dm/grunt-simple-protractor.svg?style=flat
+[npm-url]: https://npmjs.org/package/grunt-simple-protractor
+
 [grunt-util-spawn]: http://gruntjs.com/api/grunt.util#grunt.util.spawn
