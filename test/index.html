@@ -1,0 +1,15 @@
+<html ng-app="app">
+  <head>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+    var app = angular.module('app', [])
+    app.controller('MainCtrl', function($scope) {
+      $scope.foo = 'bar'
+    })
+    </script>
+  </head>
+  <body ng-controller="MainCtrl">
+    Foo:<input ng-model="foo"/>
+    <p id="baz">{{ foo }}</p>
+  </body>
+</html>
