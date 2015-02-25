@@ -42,9 +42,9 @@ your web app. The base directory or your app (where your Gruntfile.js is located
 directory of your server. Both servers will close when protractor finishes, which makes it very 
 useful for continuous integration environments.
 
-If you don't want to automate webdriver, you can set `autoWebdriver` to `false`. If you don't want 
-to use this library, you would probably need to start webdriver manually and close it when grunt or 
-protractor finishes: `kill -s SIGINT seleniumProcess.pid`.
+If you don't want to automate webdriver, you can set `autoWebdriver` to `false`. If you start 
+webdriver manually, you need to close it when grunt finishes. You can send a `SIGINT` signal to the 
+selenium process to gracefully exit: `kill -s SIGINT seleniumProcess.pid`.
 
 
 
@@ -172,8 +172,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
-* **v1.0.2**   02.25.2015   Added more verbose error output
-* **v1.0.0**   02.24.2015   Initial release
+* **v1.0.0**   02.25.2015   Initial release
 
 
 ## License
