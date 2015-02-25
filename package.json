@@ -1,6 +1,6 @@
 {
   "name": "grunt-simple-protractor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple protractor task for grunt",
   "main": "Gruntfile.js",
   "directories": {

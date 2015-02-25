@@ -33,7 +33,7 @@ And then include your tests in your `Gruntfile.js`:
         }
       })
     
-      grunt.loadTasks('tasks')
+      grunt.loadNpmTasks('grunt-simple-protractor')
       grunt.registerTask('default', ['protractor'])
     }
 
@@ -172,6 +172,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* **v1.0.1**   02.26.2015   Fixed error in README
 * **v1.0.0**   02.25.2015   Initial release
 
 
