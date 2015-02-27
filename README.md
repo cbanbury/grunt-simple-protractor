@@ -18,39 +18,49 @@ servers when protractor finishes.
 
 First install the task:
 
-    npm install grunt-simple-protractor
+```bash
+npm install grunt-simple-protractor
+```
 
 And then include your tests in your `Gruntfile.js`:
 
-    module.exports = function(grunt) {
-      grunt.initConfig({
-        protractor: {
-          your_target: {
-            options: {
-              specs: ['test/e2e/*.js']
-            }
-          }
+```js
+module.exports = function(grunt) {
+  grunt.initConfig({
+    protractor: {
+      your_target: {
+        options: {
+          specs: ['test/e2e/*.js']
         }
-      })
-    
-      grunt.loadNpmTasks('grunt-simple-protractor')
-      grunt.registerTask('default', ['protractor'])
+      }
     }
+  })
+
+  grunt.loadNpmTasks('grunt-simple-protractor')
+  grunt.registerTask('default', ['protractor'])
+}
+```
+
+## How It Works
 
 This task will automatically run webdriver by default. It will also create a local server to serve 
-your web app. The base directory or your app (where your Gruntfile.js is located) is the base 
-directory of your server. Both servers will close when protractor finishes, which makes it very 
-useful for continuous integration environments.
+your web app. The base directory or your app (where your `Gruntfile.js` is located) is the base 
+directory of the local server.  
+
+Both servers will close when protractor finishes, which makes it very useful for continuous 
+integration environments.
 
 If you don't want to automate webdriver, you can set `autoWebdriver` to `false`. If you start 
-webdriver manually, you need to close it when grunt finishes. You can send a `SIGINT` signal to the 
-selenium process to gracefully exit: `kill -s SIGINT seleniumProcess.pid`.
+webdriver manually, you need to close it when grunt finishes.  
+You can send a `SIGINT` signal to the selenium process to gracefully exit: `kill -s SIGINT 
+seleniumProcess.pid`.
 
 
 
 ## Options
 
-The options are taken from the protractor command line options with a few additions.
+The options are taken from the protractor command line options with a few additions for the task. If you want to 
+use protractor options that are not listed here, supply a protractor configuration file using `configFile`.
 
 
 **runAsync**  
@@ -61,10 +71,12 @@ Run the task asynchronously. The event will emit an event called `protractor` th
 In order to complete the task and close the servers, the `finish` function needs to be called. Here 
 is an example:
 
-    grunt.event.on('protractor', function(error, result, finish) {
-      grunt.log.write(result)
-      finish()
-    })
+```js
+grunt.event.on('protractor', function(error, result, finish) {
+  grunt.log.write(result)
+  finish()
+})
+```
 
 **autoLocalServer**  
 Type: `Boolean`, Default: `true`
@@ -172,6 +184,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* **v1.0.3**   02.27.2015   Updated README
 * **v1.0.2**   02.26.2015   Fixed error in README
 * **v1.0.0**   02.25.2015   Initial release
 
