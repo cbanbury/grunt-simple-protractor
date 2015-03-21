@@ -28,6 +28,28 @@ module.exports = function(grunt) {
                                 'autoWebdriver', 'debugWebdriver', 'nodeBinary', 'configFile']
 
 
+
+    function finishTask() {
+      if (server) {
+        server.close()
+        grunt.log.debug('Local server connection closed')
+      }
+
+      if (webdriverProcess) {
+        webdriverProcess.kill('SIGINT')
+        grunt.log.debug('Exited WebDriver process')
+      }
+
+      if (seleniumProcessId) {
+        process.kill(seleniumProcessId, 'SIGINT')
+        grunt.log.debug('Exited Selenium Standalone process')
+      }
+
+      done()
+    }
+
+
+
     function runWebdriver(protractorLibPath) {
       var webdriverBinPath = path.resolve(protractorLibPath, '../../bin/webdriver-manager')
       grunt.log.debug('Webdriver process started: ' + 
@@ -39,19 +61,15 @@ module.exports = function(grunt) {
         opts: { stdio: 'pipe' }
       }) 
 
-      if (options.debugWebdriver && webdriverProcess.stderr)
-        webdriverProcess.stderr.pipe(process.stderr)
+      webdriverProcess.stdout.pipe(process.stdout)
+      webdriverProcess.stderr.pipe(process.stderr)
 
-
-      function findSeleniumPid(chunk) {
+      webdriverProcess.stdout.on('data', function findSeleniumPid(chunk) {
         chunk = chunk.toString('ascii')
         var matchObj = chunk.match(/seleniumProcess\.pid: [0-9]{0,7}/)
         if (matchObj)
           seleniumProcessId = matchObj[0].split(' ')[1]
-      }
-
-      if (webdriverProcess.stdout)
-        webdriverProcess.stdout.on('data', findSeleniumPid)
+      })
     }
 
 
@@ -65,7 +83,7 @@ module.exports = function(grunt) {
       })
 
       server.listen(options.localServerPort)
-      grunt.log.writeln('Local server listening on http://localhost:' + options.localServerPort)
+      grunt.log.debug('Local server listening on http://localhost:' + options.localServerPort)
     }
 
 
@@ -86,13 +104,14 @@ module.exports = function(grunt) {
 
 
       var protractorBinPath = path.resolve(protractorLibPath, '../../bin/protractor')
-      protractorArgs.unshift(protractorBinPath)
       if (options.configFile)
-        protractorArgs.push(options.configFile)
-
+        protractorArgs.unshift(options.configFile)
+      protractorArgs.unshift(protractorBinPath)
 
       grunt.log.debug('Starting protractor: ' + 
                       options.nodeBinary + ' ' + protractorArgs.join(' '))
+
+
 
       var protractorProcess = grunt.util.spawn({
         cmd: options.nodeBinary,
@@ -101,47 +120,23 @@ module.exports = function(grunt) {
       }, 
       function(error, result, code) {
         grunt.log.debug('Protractor finished. (Code ' + code + ')')
-        grunt.log.debug('Error:', error)
-        grunt.log.debug('Result:', result)
-
-        function finish() {
-          if (server) {
-            server.close()
-            grunt.log.writeln('Local server connection closed')
-          }
-
-          if (webdriverProcess) {
-            webdriverProcess.kill('SIGINT')
-            grunt.log.writeln('Exited WebDriver process')
-          }
-
-          if (seleniumProcessId) {
-            process.kill(seleniumProcessId, 'SIGINT')
-            grunt.log.writeln('Exited Selenium Standalone process')
-          }
-
-          done()
-        }
 
         if (options.runAsync) {
-          grunt.event.emit('protractor', error, result, finish)
+          grunt.event.emit('protractor', error, result, finishTask)
         }
         else {
           if (error) {
-            if (result.stderr)
-              grunt.log.error(result.stderr)
-            else if (result.stdout)
-              grunt.log.error(result.stdout)
-
-            finish()
+            finishTask()
             grunt.fail.fatal('Protractor task failed.')
           }
           else {
-            grunt.log.write(result.stdout)
-            finish()
+            finishTask()
           }
         }
       })
+
+      protractorProcess.stdout.pipe(process.stdout)
+      protractorProcess.stderr.pipe(process.stderr)
     }
     
 
@@ -157,7 +152,7 @@ module.exports = function(grunt) {
         runWebdriver(protractorLibPath)
 
         if (webdriverProcess && webdriverProcess.stderr)
-          webdriverProcess.stderr.on('data', function(chunk) {
+          webdriverProcess.stderr.on('data', function waitUntilServer(chunk) {
             chunk = chunk.toString('ascii')
             var matchObj = chunk.match(/Started .*Server/)
             if (matchObj)

@@ -22,6 +22,12 @@ First install the task:
 npm install grunt-simple-protractor
 ```
 
+Update webdriver:
+
+```bash
+./node_modules/grunt-simple-protractor/node_modules/.bin/webdriver-manager update --standalone
+```
+
 And then include your tests in your `Gruntfile.js`:
 
 ```js
@@ -41,6 +47,10 @@ module.exports = function(grunt) {
 }
 ```
 
+If you run into problems, run grunt with the `--stack` and/or `--debug` flags to debug further.
+
+
+
 ## How It Works
 
 This task will automatically run webdriver by default. It will also create a local server to serve 
@@ -48,12 +58,20 @@ your web app. The base directory or your app (where your `Gruntfile.js` is locat
 directory of the local server.  
 
 Both servers will close when protractor finishes, which makes it very useful for continuous 
-integration environments.
+integration environments. Protractor does support directConnect, but it does not always work, and it
+definitely does not work for all browsers, such as the headless browser [PhantomJS](http://phantomjs.org/).
+
+
+
+## Automating WebDriver
 
 If you don't want to automate webdriver, you can set `autoWebdriver` to `false`. If you start 
-webdriver manually, you need to close it when grunt finishes.  
+webdriver manually, you need to close it when grunt finishes.
+
 You can send a `SIGINT` signal to the selenium process to gracefully exit: `kill -s SIGINT 
-seleniumProcess.pid`.
+seleniumProcess.pid`. You would probably also need to [fork](http://linux.die.net/man/2/fork) your shell process 
+so that you can run both the protractor and webdriver process simultaneously. That's why `autoWebdriver` is set 
+to `true` by default -- it's much simpler.
 
 
 
@@ -176,14 +194,20 @@ Type: `Boolean`, Default: `false`
 Turn on troubleshooting output.
 
 
-
 ## Contributing
 
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 
+## Issues
+
+Protractor seems to have issues with Firefox. See the project's [issue page](https://github.com/Risto-Stevcev/grunt-simple-protractor/issues) for more details.
+
+
+
 ## Release History
 
+* **v1.0.5**   03.21.2015   Updated README and added more verbose output
 * **v1.0.3**   02.27.2015   Updated README
 * **v1.0.2**   02.26.2015   Fixed error in README
 * **v1.0.0**   02.25.2015   Initial release

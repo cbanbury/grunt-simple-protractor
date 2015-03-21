@@ -1,4 +1,3 @@
 node_modules
 bower_components
-test/output/actual.json
-test/killprotractor.sh
+test/output/*.json

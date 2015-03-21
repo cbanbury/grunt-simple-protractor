@@ -7,10 +7,10 @@
     "test": "test"
   },
   "dependencies": {
-    "grunt": "^0.4.5",
     "protractor": "^1.7.0"
   },
   "devDependencies": {
+    "grunt": "^0.4.5",
     "bower": "^1.3.12",
     "grunt-cli": "^0.1.13",
     "grunt-file-compare": "^1.0.5",

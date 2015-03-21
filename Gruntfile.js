@@ -13,12 +13,13 @@ module.exports = function(grunt) {
         options: {
           nodeBinary: nodeBinary,
           specs: ['test/*.e2e.js'],
-          resultJsonOutputFile: 'test/output/actual.json'
+          resultJsonOutputFile: 'test/output/basic_actual.json'
         }
       },
       configfile: {
         options: {
-          configFile: 'test/sample.conf'
+          configFile: 'test/sample.conf',
+          resultJsonOutputFile: 'test/output/configfile_actual.json'
         }
       }
     },
@@ -33,7 +34,8 @@ module.exports = function(grunt) {
       }
     },
     file_compare: {
-      basic: ['test/output/*.json']
+      basic: ['test/output/basic_*.json'],
+      configfile: ['test/output/configfile_*.json']
     }
   })
 
@@ -42,5 +44,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-text-replace')
   grunt.loadNpmTasks('grunt-file-compare')
 
-  grunt.registerTask('default', ['protractor:basic', 'replace', 'file_compare'])
+  grunt.registerTask('basic', ['protractor:basic', 'replace', 'file_compare:basic'])
+  grunt.registerTask('configfile', ['protractor:configfile', 'replace', 'file_compare:configfile'])
+
+  grunt.registerTask('default', ['basic'])
 }
