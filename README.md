@@ -201,7 +201,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Issues
 
-Protractor seems to have issues with Firefox. See the project's [issue page](https://github.com/Risto-Stevcev/grunt-simple-protractor/issues) for more details.
+See the project's [issue page](https://github.com/Risto-Stevcev/grunt-simple-protractor/issues) for more details.
 
 
 
