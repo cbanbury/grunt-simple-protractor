@@ -6,10 +6,10 @@
 [![Npm Version][npm-image]][npm-url]
 [![Npm Downloads][downloads-image]][npm-url]
 
-A simple protractor task for grunt. It automates much of the process of running E2E protractor
-tests.
+A simple protractor task for grunt. It automates much of the process of running E2E protractor 
+tests. 
 
-The task starts webdriver and a local server automatically before protractor starts, and closes the
+The task starts webdriver and a local server automatically before protractor starts, and closes the 
 servers when protractor finishes.
 
 
@@ -53,11 +53,11 @@ If you run into problems, run grunt with the `--stack` and/or `--debug` flags to
 
 ## How It Works
 
-This task will automatically run webdriver by default. It will also create a local server to serve
-your web app. The base directory or your app (where your `Gruntfile.js` is located) is the base
+This task will automatically run webdriver by default. It will also create a local server to serve 
+your web app. The base directory or your app (where your `Gruntfile.js` is located) is the base 
 directory of the local server.  
 
-Both servers will close when protractor finishes, which makes it very useful for continuous
+Both servers will close when protractor finishes, which makes it very useful for continuous 
 integration environments. Protractor does support directConnect, but it does not always work, and it
 definitely does not work for all browsers, such as the headless browser [PhantomJS](http://phantomjs.org/).
 
@@ -65,28 +65,28 @@ definitely does not work for all browsers, such as the headless browser [Phantom
 
 ## Automating WebDriver
 
-If you don't want to automate webdriver, you can set `autoWebdriver` to `false`. If you start
+If you don't want to automate webdriver, you can set `autoWebdriver` to `false`. If you start 
 webdriver manually, you need to close it when grunt finishes.
 
-You can send a `SIGINT` signal to the selenium process to gracefully exit: `kill -s SIGINT
-seleniumProcess.pid`. You would probably also need to [fork](http://linux.die.net/man/2/fork) your shell process
-so that you can run both the protractor and webdriver process simultaneously. That's why `autoWebdriver` is set
+You can send a `SIGINT` signal to the selenium process to gracefully exit: `kill -s SIGINT 
+seleniumProcess.pid`. You would probably also need to [fork](http://linux.die.net/man/2/fork) your shell process 
+so that you can run both the protractor and webdriver process simultaneously. That's why `autoWebdriver` is set 
 to `true` by default -- it's much simpler.
 
 
 
 ## Options
 
-The options are taken from the protractor command line options with a few additions for the task. If you want to
+The options are taken from the protractor command line options with a few additions for the task. If you want to 
 use protractor options that are not listed here, supply a protractor configuration file using `configFile`.
 
 
 **runAsync**  
 Type: `Boolean`, Default: `false`
 
-Run the task asynchronously. The event will emit an event called `protractor` that sends the
+Run the task asynchronously. The event will emit an event called `protractor` that sends the 
 `error` and `result` from [grunt.util.spawn][grunt-util-spawn] when webdriver or protractor are run.
-In order to complete the task and close the servers, the `finish` function needs to be called. Here
+In order to complete the task and close the servers, the `finish` function needs to be called. Here 
 is an example:
 
 ```js
@@ -100,6 +100,7 @@ grunt.event.on('protractor', function(error, result, finish) {
 Type: `Boolean`, Default: `true`
 
 Run a local server. The local server is closed after protractor finishes.
+
 
 **localServerPort**  
 Type: `Number`, Default: `8080`
@@ -129,7 +130,7 @@ Run webdriver automatically. Webdriver is closed after protractor finishes.
 **debugWebdriver**  
 Type: `Boolean`, Default: `false`
 
-Display webdriver output for debugging purposes. In order for this to take effect, `autoWebdriver`
+Display webdriver output for debugging purposes. In order for this to take effect, `autoWebdriver` 
 must be set to `true`.
 
 
@@ -140,26 +141,26 @@ The path of the node binary.
 
 
 **configFile**  
-Type: `String`
+Type: `String` 
 
-The path of a configuration file to use for protractor. Any options explicitly passed in will
+The path of a configuration file to use for protractor. Any options explicitly passed in will 
 override values from this file.
 
 
 **browser**  
-Type: `String`
+Type: `String` 
 
 Browsername, e.g. chrome or firefox.
 
 
 **seleniumAddress**  
-Type: `String`
+Type: `String` 
 
 A running selenium address to use.
 
 
-**seleniumPort**  
-Type: `Number`
+**seleniumPort**  
+Type: `Number` 
 
 Optional port for the selenium standalone server.
 
