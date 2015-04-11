@@ -17,8 +17,7 @@
     "grunt-text-replace": "^0.4.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/grunt basic && ./node_modules/.bin/grunt configfile",
-    "dummy": "echo duuude"
+    "test": "./node_modules/.bin/grunt basic && ./node_modules/.bin/grunt configfile"
   },
   "repository": {
     "type": "git",

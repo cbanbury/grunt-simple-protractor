@@ -25,7 +25,7 @@ module.exports = function(grunt) {
       seleniumAddress: 'http://localhost:4444/wd/hub'
     })
 
-    var debugWebdriver = ['runAsync', 'autoLocalServer', 'localServerPort',
+    var simpleProtractorOpts = ['runAsync', 'autoLocalServer', 'localServerPort',
                                 'autoWebdriver', 'debugWebdriver', 'nodeBinary', 'configFile']
 
 
