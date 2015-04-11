@@ -1,9 +1,9 @@
-/*
+/* 
  * grunt-simple-protractor
  * https://github.com/Risto-Stevcev/grunt-simple-protractor
  *
  * Copyright (c) 2015 Risto Stevcev
- * Licensed under the MIT license
+ * Licensed under the MIT license 
  */
 
 module.exports = function(grunt) {
@@ -25,7 +25,7 @@ module.exports = function(grunt) {
       seleniumAddress: 'http://localhost:4444/wd/hub'
     })
 
-    var simpleProtractorOpts = ['runAsync', 'autoLocalServer', 'localServerPort',
+    var simpleProtractorOpts = ['runAsync', 'autoLocalServer', 'localServerPort', 
                                 'autoWebdriver', 'debugWebdriver', 'nodeBinary', 'configFile']
 
 
@@ -58,14 +58,14 @@ module.exports = function(grunt) {
 
     function runWebdriver(protractorLibPath) {
       var webdriverBinPath = path.resolve(protractorLibPath, '../../bin/webdriver-manager')
-      grunt.log.debug('Webdriver process started: ' +
+      grunt.log.debug('Webdriver process started: ' + 
                       options.nodeBinary + ' ' + webdriverBinPath + ' start')
 
       webdriverProcess = grunt.util.spawn({
         cmd: options.nodeBinary,
         args: [webdriverBinPath, 'start'],
         opts: { stdio: 'pipe' }
-      })
+      }) 
 
       webdriverProcess.stdout.pipe(process.stdout)
       webdriverProcess.stderr.pipe(process.stderr)
