@@ -1,20 +1,21 @@
-/* 
+/*
  * grunt-simple-protractor
  * https://github.com/Risto-Stevcev/grunt-simple-protractor
  *
  * Copyright (c) 2015 Risto Stevcev
- * Licensed under the MIT license 
+ * Licensed under the MIT license
  */
 
 module.exports = function(grunt) {
   var http = require('http')
   var path = require('path')
   var fs = require('fs')
+  var spawn = require('child_process').spawn
 
 
 
   grunt.registerMultiTask('protractor', 'Run tests with protractor', function() {
-    var server, seleniumProcessId, webdriverProcess
+    var server, seleniumProcessId, webdriverProcess, customServerProcess
     var done = this.async()
     var options = this.options({
       nodeBinary: 'node',
@@ -24,7 +25,7 @@ module.exports = function(grunt) {
       seleniumAddress: 'http://localhost:4444/wd/hub'
     })
 
-    var simpleProtractorOpts = ['runAsync', 'autoLocalServer', 'localServerPort', 
+    var debugWebdriver = ['runAsync', 'autoLocalServer', 'localServerPort',
                                 'autoWebdriver', 'debugWebdriver', 'nodeBinary', 'configFile']
 
 
@@ -40,6 +41,11 @@ module.exports = function(grunt) {
         grunt.log.debug('Exited WebDriver process')
       }
 
+      if (customServerProcess) {
+        customServerProcess.kill('SIGINT')
+        grunt.log.debug('Exited custom server process')
+      }
+
       if (seleniumProcessId) {
         process.kill(seleniumProcessId, 'SIGINT')
         grunt.log.debug('Exited Selenium Standalone process')
@@ -52,14 +58,14 @@ module.exports = function(grunt) {
 
     function runWebdriver(protractorLibPath) {
       var webdriverBinPath = path.resolve(protractorLibPath, '../../bin/webdriver-manager')
-      grunt.log.debug('Webdriver process started: ' + 
+      grunt.log.debug('Webdriver process started: ' +
                       options.nodeBinary + ' ' + webdriverBinPath + ' start')
 
       webdriverProcess = grunt.util.spawn({
         cmd: options.nodeBinary,
         args: [webdriverBinPath, 'start'],
         opts: { stdio: 'pipe' }
-      }) 
+      })
 
       webdriverProcess.stdout.pipe(process.stdout)
       webdriverProcess.stderr.pipe(process.stderr)
@@ -75,15 +81,22 @@ module.exports = function(grunt) {
 
 
     function runLocalServer() {
-      server = http.createServer(function(request, response) {
-        fs.readFile('.' + request.url, 'utf8', function(err, data) {
-          if (err) return 
-          response.end(data)
-        })
-      })
+      if (options.localServerCommand) {
+        grunt.log.debug('Starting custom server')
+        var args = options.localServerCommand.split(' ');
 
-      server.listen(options.localServerPort)
-      grunt.log.debug('Local server listening on http://localhost:' + options.localServerPort)
+        customServerProcess = spawn(args[0], args.slice(1), {stdio: 'inherit'})
+      } else {
+        server = http.createServer(function(request, response) {
+          fs.readFile('.' + request.url, 'utf8', function(err, data) {
+            if (err) return
+            response.end(data)
+          })
+        })
+
+        server.listen(options.localServerPort)
+        grunt.log.debug('Local server listening on http://localhost:' + options.localServerPort)
+      }
     }
 
 
@@ -108,7 +121,7 @@ module.exports = function(grunt) {
         protractorArgs.unshift(options.configFile)
       protractorArgs.unshift(protractorBinPath)
 
-      grunt.log.debug('Starting protractor: ' + 
+      grunt.log.debug('Starting protractor: ' +
                       options.nodeBinary + ' ' + protractorArgs.join(' '))
 
 
@@ -117,7 +130,7 @@ module.exports = function(grunt) {
         cmd: options.nodeBinary,
         args: protractorArgs,
         opts: { stdio: 'pipe' }
-      }, 
+      },
       function(error, result, code) {
         grunt.log.debug('Protractor finished. (Code ' + code + ')')
 
@@ -138,13 +151,13 @@ module.exports = function(grunt) {
       protractorProcess.stdout.pipe(process.stdout)
       protractorProcess.stderr.pipe(process.stderr)
     }
-    
+
 
 
     function runGruntSimpleProtractor() {
       var protractorLibPath = require.resolve('protractor')
 
-      if (options.autoLocalServer)
+      if (options.autoLocalServer || options.localServerCommand)
         runLocalServer()
 
       /* Run protractor when webdriver server starts */
